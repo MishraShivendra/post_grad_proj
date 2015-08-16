@@ -1189,7 +1189,7 @@ void res_links_6()                                                    //Storing 
 
 
 
-void res_links_7()                                                      //Storing output file links for scenario 7
+void res_links_7()                //Storing output file links for scenario 7
 {
  strcpy(links[0].resl,"C:/sound/SC7_/S1_S2/S1_S2_1.txt");
  strcpy(links[1].resl,"C:/sound/SC7_/S1_S2/S1_S2_2.txt");
@@ -2220,7 +2220,7 @@ int main()                            // Main function
 	aga:
 	     {
 
-			printf("\n Menu:\n 0: Exit\n 1. Feed Source destination\n 2. Scan file\n 3. Error-full New Line removal");
+			printf("\n67 Menu:\n 0: Exit\n 1. Feed Source destination\n 2. Scan file\n 3. Error-full New Line removal");
 			printf("\n 4. Prepare Iteration\n 5. Front Sensor Data Removal\n 6. Distance Calculation\n 7. Draw Thermal Grid\n 8. Generate Final file \n 9. Separated Output\n Enter choice:");
 			scanf("%d", &cho);
 			switch(cho)
