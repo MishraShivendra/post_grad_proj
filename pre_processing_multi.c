@@ -13,6 +13,8 @@
  */
 #define NO_OF_SCENARIOS 7
 #define TOTAL_TRIALS 80
+#define THERMAL_IMAGE_BYTES 35
+#define THERMAL_IMAGE_RESO 16
 
 #if __linux__
 #define _XOPEN_SOURCE 700
@@ -36,21 +38,27 @@
 #define SCENARIO_5 4
 #define SCENARIO_6 5
 #define SCENARIO_7 6
+/* Matrix for thermal imaging data*/
+unsigned char ther[THERMAL_IMAGE_BYTES];
+unsigned char diss[NO_OF_SCENARIOS][THERMAL_IMAGE_BYTES];
+unsigned char readbuff1[NO_OF_SCENARIOS][THERMAL_IMAGE_BYTES],op1[20];
+volatile int prec=0;                                 			
+/* Result matrix of thermal imaging data*/
 
-unsigned char ther[35],diss[7][35],readbuff1[7][35],op1[20];		/* Matrix for thermal imaging data*/
-volatile int prec=0;                                 			/* Result matrix of thermal imaging data*/
-
-float fl1[7][16],val;
-FILE *src[7], *temp[7],*oup[7];						/* File pointers for i/o files*/
+float fl1[NO_OF_SCENARIOS][THERMAL_IMAGE_RESO],val;
+/* File pointers for i/o files*/
+FILE *src[NO_OF_SCENARIOS], *temp[NO_OF_SCENARIOS],*oup[NO_OF_SCENARIOS];						
 int count,ag=0;
-char tmp[7], ip[7][35], op[7][35];
+char tmp[NO_OF_SCENARIOS], ip[NO_OF_SCENARIOS][THERMAL_IMAGE_BYTES], op[NO_OF_SCENARIOS][THERMAL_IMAGE_BYTES];
 int is_input_file = 1;
 pthread_mutex_t my_lock;
 
 struct fil
 {
-	char *ip;								/* For storing input file location */
-	char *resl;								/* output file location*/
+	char *ip;
+	/* For storing input file location */
+	char *resl;								
+	/* output file location*/
 }links[NO_OF_SCENARIOS][TOTAL_TRIALS];
 
 
@@ -74,19 +82,19 @@ feed_links ( const char *link )
 	static int result_five_iterator = 0;
 	static int result_six_iterator = 0;
 	static int result_seven_iterator = 0;
-	
+
 
 	if (    (scenario_one_iterator > TOTAL_TRIALS-1) || (scenario_two_iterator > TOTAL_TRIALS-1)
-	     || (scenario_three_iterator > TOTAL_TRIALS-1) || (scenario_four_iterator > TOTAL_TRIALS-1)
-	     || (scenario_five_iterator > TOTAL_TRIALS-1) || (scenario_six_iterator > TOTAL_TRIALS-1)
-	     || (scenario_seven_iterator > TOTAL_TRIALS-1) ) {
+			|| (scenario_three_iterator > TOTAL_TRIALS-1) || (scenario_four_iterator > TOTAL_TRIALS-1)
+			|| (scenario_five_iterator > TOTAL_TRIALS-1) || (scenario_six_iterator > TOTAL_TRIALS-1)
+			|| (scenario_seven_iterator > TOTAL_TRIALS-1) ) {
 		printf ( "\nInvalid entries in directory.\n" );
 		exit(0);	
 	}
 	if (    (result_one_iterator > TOTAL_TRIALS-1) || (result_two_iterator > TOTAL_TRIALS-1)
-	     || (result_three_iterator > TOTAL_TRIALS-1) || (result_four_iterator > TOTAL_TRIALS-1)
-	     || (result_five_iterator > TOTAL_TRIALS-1) || (result_six_iterator > TOTAL_TRIALS-1)
-	     || (result_seven_iterator > TOTAL_TRIALS-1) ) {
+			|| (result_three_iterator > TOTAL_TRIALS-1) || (result_four_iterator > TOTAL_TRIALS-1)
+			|| (result_five_iterator > TOTAL_TRIALS-1) || (result_six_iterator > TOTAL_TRIALS-1)
+			|| (result_seven_iterator > TOTAL_TRIALS-1) ) {
 		printf ( "\nInvalid entries in result directory.\n" );
 		exit(0);	
 	}
@@ -114,7 +122,7 @@ feed_links ( const char *link )
 		} else {
 			links[SCENARIO_3][result_three_iterator].resl=strdup(link);
 			result_three_iterator++;
-			
+
 		}
 	}else if ( strcasecmp( link, "SC_4" ) == 0 ) {
 		if ( is_input_file ) {
@@ -158,66 +166,66 @@ feed_links ( const char *link )
 
 
 int print_entry(const char *filepath, const struct stat *info,
-                const int typeflag, struct FTW *pathinfo)
+		const int typeflag, struct FTW *pathinfo)
 {
-    static int scenario_iterator=0;
-    static int trial_iterator=0;
-	
-    if (typeflag == FTW_SL) {
-        char   *target;
-        size_t  maxlen = 1023;
-        ssize_t len;
+	static int scenario_iterator=0;
+	static int trial_iterator=0;
 
-        while (1) {
+	if (typeflag == FTW_SL) {
+		char   *target;
+		size_t  maxlen = 1023;
+		ssize_t len;
 
-            target = malloc(maxlen + 1);
-            if (target == NULL)
-                return ENOMEM;
+		while (1) {
 
-            len = readlink(filepath, target, maxlen);
-            if (len == (ssize_t)-1) {
-                const int saved_errno = errno;
-                free(target);
-                return saved_errno;
-            }
-            if (len >= (ssize_t)maxlen) {
-                free(target);
-                maxlen += 1024;
-                continue;
-            }
+			target = malloc(maxlen + 1);
+			if (target == NULL)
+				return ENOMEM;
 
-            target[len] = '\0';
-            break;
-        }
+			len = readlink(filepath, target, maxlen);
+			if (len == (ssize_t)-1) {
+				const int saved_errno = errno;
+				free(target);
+				return saved_errno;
+			}
+			if (len >= (ssize_t)maxlen) {
+				free(target);
+				maxlen += 1024;
+				continue;
+			}
 
-        printf(" %s -> %s\n", filepath, target);
-        free(target);
+			target[len] = '\0';
+			break;
+		}
 
-    } else
-    if (typeflag == FTW_SLN) {
-	
-        printf(" %s (dangling symlink)\n", filepath);
-    }else
-    if (typeflag == FTW_F){
-	    feed_links( filepath );
-    }
-    return 0;
+		printf(" %s -> %s\n", filepath, target);
+		free(target);
+
+	} else
+		if (typeflag == FTW_SLN) {
+
+			printf(" %s (dangling symlink)\n", filepath);
+		}else
+			if (typeflag == FTW_F){
+				feed_links( filepath );
+			}
+	return 0;
 }
 
 
 int print_directory_tree(const char *const dirpath)
 {
-    int result;
+	int result;
 
-    /* Invalid directory path? */
-    if (dirpath == NULL || *dirpath == '\0')
-        return errno = EINVAL;
+	/* Invalid directory path? */
+	if (dirpath == NULL || *dirpath == '\0')
+		return errno = EINVAL;
 
-    result = nftw(dirpath, print_entry, USE_FDS, FTW_PHYS);
-    if (result >= 0)
-        errno = result;
+	result = nftw(dirpath, print_entry, USE_FDS, FTW_PHYS);
+	if (result >= 0)
+		errno = result;
 
-    return errno;
+	return errno;
 }
 
 
@@ -232,31 +240,31 @@ void src_des(int sc, int no)    /* Set source destination file   (Argument is fi
 	{
 		case 0:
 			strncpy(op[sc],"t_0.txt",7);
-			op[sc][7] = '\0';
+			op[sc][NO_OF_SCENARIOS] = '\0';
 			break;
 		case 1:
 			strncpy(op[sc],"t_1.txt",7);
-			op[sc][7] = '\0';
+			op[sc][NO_OF_SCENARIOS] = '\0';
 			break; 
 		case 2:
 			strncpy(op[sc],"t_2.txt",7);
-			op[sc][7] = '\0';
+			op[sc][NO_OF_SCENARIOS] = '\0';
 			break;  	
 		case 3:
 			strncpy(op[sc],"t_3.txt",7);
-			op[sc][7] = '\0';
+			op[sc][NO_OF_SCENARIOS] = '\0';
 			break;
 		case 4:
 			strncpy(op[sc],"t_4.txt",7);
-			op[sc][7] = '\0';
+			op[sc][NO_OF_SCENARIOS] = '\0';
 			break;
 		case 5:
 			strncpy(op[sc],"t_5.txt",7);
-			op[sc][7] = '\0';
+			op[sc][NO_OF_SCENARIOS] = '\0';
 			break;
 		case 6:
 			strncpy(op[sc],"t_6.txt",7);
-			op[sc][7] = '\0';
+			op[sc][NO_OF_SCENARIOS] = '\0';
 			break;
 	}
 
@@ -313,7 +321,7 @@ void new_lin_spa(int sc)                                                   /* re
 	rewind(src[sc]);
 	rewind(temp[sc]);
 
-	while(1)
+	while(true)
 	{
 		tmp[sc] = fgetc(src[sc]);
 		if(tmp[sc] == EOF)
@@ -331,6 +339,7 @@ void new_lin_spa(int sc)                                                   /* re
 		{
 			fputc(tmp[sc],temp[sc]);
 		}
+		/* If they were hex char than no++ - sorry for magic numbers*/
 		if(((tmp[sc] >= 65) && (tmp[sc] <= 90)) || ((tmp[sc] >= 48) && (tmp[sc] <= 57)))
 		{
 			no++;
@@ -429,7 +438,7 @@ void calc(int sc)						/* This function calculates
 								   data is provided */
 {
 	unsigned char tpec1;
-	unsigned int tp1[16],tptat1;  
+	unsigned int tp1[THERMAL_IMAGE_RESO],tptat1;  
 	int k;
 	int pixel=0;
 	int buffer_iterator=2;
@@ -437,18 +446,18 @@ void calc(int sc)						/* This function calculates
 								 * Copy 35 byte and group 
 								 * them for 2byte/pixel 
 								 */
-	for ( pixel=0; pixel<=15; pixel++ ) {
+	for ( pixel=0; pixel<=THERMAL_IMAGE_RESO; pixel++ ) {
 		tp1[pixel] = 256*readbuff1[sc][buffer_iterator+1] + readbuff1[sc][buffer_iterator];
 		buffer_iterator = buffer_iterator + 2;
 	}
-	
+
 	tpec1 = readbuff1[sc][34];
 	/* Why magic number 10.0?
 	 * well, Because sensor sends 
 	 * data in this format. So that
 	 * we can get more accuracy.
 	 */
-	for(k=0;k<=15;k++)
+	for(k=0;k<=THERMAL_IMAGE_RESO;k++)
 	{
 		fl1[sc][k] = tp1[k]/10.0;					/* Divide 2byte by 10 
 										   get temperature */
@@ -502,7 +511,7 @@ void writ(int sc)
 			break;
 	}
 
-	strncpy(diss[sc],duriya,7);
+	strncpy(diss[sc],duriya,NO_OF_SCENARIOS);
 	duri = fopen(duriya,"w");
 	temp11 = fopen(ip[sc],"r");
 	if(duri == NULL )
@@ -537,6 +546,7 @@ void writ(int sc)
 				fscanf(temp11,"%x",&tep);
 				if(arr == 1)
 				{
+					/* Magic numbers adopted from the data sheet of proximity sensor */
 					val[r] = (((10.00*((1.00/((0.001240875*(tep))+0.005))-0.42))))/10;
 					if(r==4)
 					{
@@ -730,51 +740,52 @@ void fis(int sc, int re)
 void procs_sc(int *sce)
 {
 	int i,si = (*sce);
-	/*switch(si)
-	{
-		case 0:
-			{
-				set_links_1();
-				res_links_1();
-				break;
-			}
-		case 1:
-			{
-				set_links_2();
-				res_links_2();
-				break;
-			}
-		case 2:
-			{
-				set_links_3();
-				res_links_3();
-				break;
-			}
-		case 3:
-			{
-				set_links_4();
-				res_links_4();
-				break;
-			}
-		case 4:
-			{
-				set_links_5();
-				res_links_5();
-				break;
-			}
-		case 5:
-			{
-				set_links_6();
-				res_links_6();
-				break;
-			}
-		case 6:
-			{
-				set_links_7();
-				res_links_7();
-				break;
-			}
-	}*/
+	/* Not required anymore - posix library does the job.
+	   switch(si)
+	   {
+	   case 0:
+	   {
+	   set_links_1();
+	   res_links_1();
+	   break;
+	   }
+	   case 1:
+	   {
+	   set_links_2();
+	   res_links_2();
+	   break;
+	   }
+	   case 2:
+	   {
+	   set_links_3();
+	   res_links_3();
+	   break;
+	   }
+	   case 3:
+	   {
+	   set_links_4();
+	   res_links_4();
+	   break;
+	   }
+	   case 4:
+	   {
+	   set_links_5();
+	   res_links_5();
+	   break;
+	   }
+	   case 5:
+	   {
+	   set_links_6();
+	   res_links_6();
+	   break;
+	   }
+	   case 6:
+	   {
+	   set_links_7();
+	   res_links_7();
+	   break;
+	   }
+	   }*/
 	for(i=0;i<=TOTAL_TRIALS;i++)
 	{
 		src_des(si,i);
@@ -807,21 +818,28 @@ void procs_sc(int *sce)
  */
 void stts()
 {
-	int e=0,cur;
+	int completed_flag = 0, cur;
 	float dev;
 	while(1)
 	{
 		cur = prec;
+		/* Why magic number 559 and 100?
+		 * Well, for showing percentage status, 
+		 * I am multiplying 100 to it. And 559 is 
+		 * the total number of files. 
+		 * i.e. NO_OF_SCENARIOS X number of trials on each 
+		 * path x Number of paths = 560 
+		 */
 		dev = ((float)cur/559)*100;
 		printf("\r%.2f%% files Pre-Processed......",dev);
 		fflush(stdout);
 		if(prec==560)
 		{
-			e=1;
+			completed_flag = 1;
 			break;	
 		}
 	}
-	if(e) {
+	if( completed_flag ) {
 		pthread_exit(0);
 	}
 }
@@ -850,10 +868,10 @@ void remov()
 
 void
 show_help () {
-printf ( "\nMulti-threaded Preprocessing options:\n" );
-printf ( "-h, --help         Show this help and exit.\n" );
-printf ( "-r, --result-file  Excepts result file locations.\n");
-printf ( "-i, --input-file   Expects input file locations.\n" );
+	printf ( "\nMulti-threaded Preprocessing options:\n" );
+	printf ( "-h, --help         Show this help and exit.\n" );
+	printf ( "-r, --result-file  Excepts result file locations.\n");
+	printf ( "-i, --input-file   Expects input file locations.\n" );
 
 }
 

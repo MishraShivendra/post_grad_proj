@@ -17,14 +17,10 @@
  */ 
 #include<pthread.h>
 #include<stdio.h>
-//#include<conio.h>
 #include<string.h>
 #include<stdlib.h>
 #include<errno.h> 
-// Header files
 FILE *src1[8],*src2[8],*tmp[8];       
-//int ch;
-//char ip_1[100], ip_2[100];
 struct fil
 {
 	char ip[35];                             // Variable for Input file
@@ -660,7 +656,6 @@ void open_res()                              // Opening file for Path 1
 	if(tmp == NULL )
 	{
 		perror("\n tmp");
-		//getch();
 	}
 }
 void open_res_2()                         // Opening file for path 2
@@ -669,7 +664,6 @@ void open_res_2()                         // Opening file for path 2
 	if(tmp == NULL )
 	{
 		perror("\n tmp2");
-		//getch();
 	}
 }
 void open_res_3()                              // Opening file for path 2
@@ -678,7 +672,6 @@ void open_res_3()                              // Opening file for path 2
 	if(tmp == NULL )
 	{
 		perror("\n tmp3");
-		//getch();
 	}
 }
 void open_res_4()                            // Opening file for path 2
@@ -687,7 +680,6 @@ void open_res_4()                            // Opening file for path 2
 	if(tmp == NULL )
 	{
 		perror("\n tmp4");
-		//getch();
 	}
 }
 
@@ -698,7 +690,6 @@ void open_res_5()                              // Opening file for Path 1
 	if(tmp == NULL )
 	{
 		perror("\n tmp5");
-		//getch();
 	}
 }
 void open_res_6()                         // Opening file for path 2
@@ -707,7 +698,6 @@ void open_res_6()                         // Opening file for path 2
 	if(tmp == NULL )
 	{
 		perror("\n tmp6");
-		//getch();
 	}
 }
 void open_res_7()                              // Opening file for path 2
@@ -716,7 +706,7 @@ void open_res_7()                              // Opening file for path 2
 	if(tmp == NULL )
 	{
 		perror("\n tmp7");
-		//getch();
+		 
 	}
 }
 
@@ -726,7 +716,7 @@ void open_res_8()                            // Opening file for path 2
 	if(tmp == NULL )
 	{
 		perror("\n tmp8");
-		//getch();
+		 
 	}
 }
 
@@ -739,20 +729,18 @@ void open_fil(int pt, int sr1, int sr2)                             // open file
 	if(src1[pt] == NULL )
 	{
 		perror(links[pt][sr1].ip);
-		// printf("(%s)",links[sr1].ip);
-		//getch();
+		 
 	}
 	if(src2[pt] == NULL )
 	{
 		perror(links[pt][sr2].ip);
-		//printf("(%s)",links[sr2].ip);
-		//getch();
+		 
 	} 
 }
 
 
 float cal_dis_nt(int pt)                                       //This function calculates distance without threshold
-{                                                        // THis function is used for choice : 1,2,3,4;
+{                                                        // This function is used for choice : 1,2,3,4;
 
 	char tmp1[20],tmp2[20];
 	int k,count=0;
@@ -771,8 +759,6 @@ float cal_dis_nt(int pt)                                       //This function c
 		}
 		else
 		{
-			//printf("\n%d:%s\t%s",count,tmp1,tmp2);
-			////getch();
 			if(atof(tmp1)>atof(tmp2))
 			{
 				sum = sum + (atof(tmp1)-atof(tmp2));
@@ -814,7 +800,6 @@ void write_res(int pt)                                          // This function
 			open_fil(pt,i,j);
 			ret = cal_dis_nt(pt);
 			fprintf(tmp[pt],"%.1f\t",ret);
-			//printf("\nCalculating Distance of file[%d] and file [%d]....",i,j);
 			close_al(pt);
 		}
 		fprintf(tmp[pt],"\n");
@@ -900,7 +885,3 @@ int main()                                  // Main function
 	}		 	 
 	return 0;	
 }
-
-
-
-

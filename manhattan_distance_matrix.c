@@ -2,11 +2,11 @@
  * File: DIS.C
  * Created on: Apr 28, 2014; 04:15:10 PM 
  * Author: Shivendra Mishra
- * Notepad++ v6.5.5 (UNICODE)
+ * 
  * 
  *
  *
- * Environment: Notepad++ with Borland C++ V5.5
+ * Environment: Vim editor with GCC 4.9.2
  * Input: Processed file from system file c:/pdata/SCx_/Sx_Sy/Sx_Sy_t.xls      Where x,y are path directions and t is trial.
  * Output: Distance Matrix (70x70 Matrix)
  * Execution: Execute and choose path accordingly from menu.
@@ -16,22 +16,21 @@
  *     9 to 12: It will generate distance matrix only for IR Proximity Sensor Data;
  */ 
 #include<stdio.h>
-#include<conio.h>
 #include<string.h>
 #include<stdlib.h>
-#include<errno.h>                 // Header files
+#include<errno.h>                 /* Header files */
 FILE *src1,*src2,*tmp;       
 int ch;
 char ip_1[100], ip_2[100];
 struct fil
 {
-	char ip[35];                             // Variable for Input file
+	char ip[35];                             /* Variable for Input file */
 }links[100];
 struct mm
 {
 	float l_max,l_min,r_max,r_min;
 }sin[7];
-void set_links_1()                                                      // Storing preprocessed file links
+void set_links_1()                                                      /* Storing preprocessed file links*/
 {
 	strcpy(links[0].ip,"C:/pdata/SC1_/S1_S2/S1_S2_1.XLS");
 	strcpy(links[1].ip,"C:/pdata/SC1_/S1_S2/S1_S2_2.XLS");
@@ -624,10 +623,16 @@ void set_links_8()
 	strcpy(links[68].ip,"C:/pdata/SC7_/S8_S7/S8_S7_9.XLS");
 	strcpy(links[69].ip,"C:/pdata/SC7_/S8_S7/S8_S7_10.XLS");
 }
-char* label(int no)                                           // This function will return a file label as SCx_Sy_Sz_t
-{                                                             // Argument is location of file.
-	char buff[35],temp[15];                                      // As e.g. Menu choice: 04; Argument = 69 will return SC7_S4_S3_10 (i.e.) Scenario 7, S4_S3 path, Trial 10; 
-	int i=0,j=0,count=0;                                         // It will be used for distance matrix heading
+
+/* This function will return a file label as SCx_Sy_Sz_t
+ * Argument is location of file. As e.g. Menu choice: 04; 
+ * Argument = 69 will return SC7_S4_S3_10 (i.e.). 
+ * Scenario 7, S4_S3 path, Trial 10;
+ * It will be used for distance matrix heading.
+ */
+char* label(int no)
+	char buff[35],temp[15]; Scenario 7, S4_S3 path, Trial 10; 
+	int i=0,j=0,count=0;                                         
 	strcpy(buff,links[no].ip);                                   
 	while(1)
 	{
@@ -654,7 +659,7 @@ char* label(int no)                                           // This function w
 	temp[j] = '\0';
 	return temp;
 }
-void open_res()                              // Opening file for Path 1
+void open_res()                              /* Opening file for Path 1 */
 {
 	tmp = fopen("1.xls", "w");
 	if(tmp == NULL )
@@ -663,7 +668,7 @@ void open_res()                              // Opening file for Path 1
 		getch();
 	}
 }
-void open_res_2()                         // Opening file for path 2
+void open_res_2()                         /* Opening file for path 2 */
 {
 	tmp = fopen("2.xls", "w");
 	if(tmp == NULL )
@@ -672,7 +677,7 @@ void open_res_2()                         // Opening file for path 2
 		getch();
 	}
 }
-void open_res_3()                              // Opening file for path 2
+void open_res_3()                              /* Opening file for path 2 */
 {
 	tmp = fopen("3.xls", "w");
 	if(tmp == NULL )
@@ -681,7 +686,7 @@ void open_res_3()                              // Opening file for path 2
 		getch();
 	}
 }
-void open_res_4()                            // Opening file for path 2
+void open_res_4()                            /* Opening file for path 2 */
 {
 	tmp = fopen("4.xls", "w");
 	if(tmp == NULL )
@@ -692,7 +697,7 @@ void open_res_4()                            // Opening file for path 2
 }
 
 
-void open_res_5()                              // Opening file for Path 1
+void open_res_5()                              /* Opening file for Path 1 */
 {
 	tmp = fopen("5.xls", "w");
 	if(tmp == NULL )
@@ -701,7 +706,7 @@ void open_res_5()                              // Opening file for Path 1
 		getch();
 	}
 }
-void open_res_6()                         // Opening file for path 2
+void open_res_6()                         /* Opening file for path 2 */
 {
 	tmp = fopen("6.xls", "w");
 	if(tmp == NULL )
@@ -710,16 +715,16 @@ void open_res_6()                         // Opening file for path 2
 		getch();
 	}
 }
-void open_res_7()                              // Opening file for path 2
+void open_res_7()                              /* Opening file for path 2 */
 {
 	tmp = fopen("7.xls", "w");
-	if(tmp == NULL )
+	if(tmp == NULL )	{
 	{
 		perror("\n tmp7");
 		getch();
 	}
 }
-void open_res_8()                            // Opening file for path 2
+void open_res_8()                            /* Opening file for path 2 */
 {
 	tmp = fopen("8.xls", "w");
 	if(tmp == NULL )
@@ -732,16 +737,16 @@ void open_res_8()                            // Opening file for path 2
 
 
 
-void open_fil(int sr1, int sr2)                             // open file for calculating distance
-{                                                           // Argument is link number of input file
-	src1 = fopen(links[sr1].ip, "r");                       // Open file 1 and 2
+void open_fil(int sr1, int sr2)                             /* open file for calculating distance */
+{                                                           /* Argument is link number of input file */
+	src1 = fopen(links[sr1].ip, "r");                   /* Open file 1 and 2 */
 	src2 = fopen(links[sr2].ip, "r");
 
 	if(src1 == NULL )
 	{
 		perror("\n Src_1:");
 		printf("(%s)",links[sr1].ip);
-		getch();
+		getch();	}
 	}
 	if(src2 == NULL )
 	{
@@ -751,8 +756,11 @@ void open_fil(int sr1, int sr2)                             // open file for cal
 	}
 
 }
-void max_min()                                         //This function is used for calculating Max-Min of 10 trials in path to minimize fluctuations
-{                                                      //This function is not used for calculations
+void max_min()       /* This function is used for calculating 
+			Max-Min of 10 trials in path to minimize 
+			fluctuations.
+		      */
+{                    /* This function is not used for calculations. */
 	int ki,k,contg=0;
 	FILE *mfil;
 	float max=30.0,min=30.0;
@@ -795,7 +803,6 @@ void max_min()                                         //This function is used f
 		max=30.0;
 		min=30.0;
 		contg=0;
-		//getch();
 		rewind(mfil);
 		for(k=1;k<=6;k++)
 		{
@@ -807,7 +814,6 @@ void max_min()                                         //This function is used f
 			if(contg==6)
 			{
 				printf("\nval:%s",mtmp);
-				//getch();
 				if(atof(mtmp)>max)
 				{
 					max = atof(mtmp);
@@ -827,12 +833,11 @@ void max_min()                                         //This function is used f
 		max=30.0;
 		min=30.0;
 		contg=0;
-		//getch();
 		fclose(mfil);
 	}
 
 }
-float cal_dis(int a, int b)              //This function calculates distance with threshold
+float cal_dis(int a, int b)              /* This function calculates distance with threshold */
 {                                        
 	FILE *com;
 	char tmp1[20],tmp2[20];
@@ -882,7 +887,6 @@ float cal_dis(int a, int b)              //This function calculates distance wit
 		else
 		{
 			valu1 = atof(tmp1);
-			//fprintf(com,"%.1f\t",valu1);
 		}	
 		if(fscanf(src2,"%s",&tmp2) == EOF)
 		{
@@ -897,12 +901,10 @@ float cal_dis(int a, int b)              //This function calculates distance wit
 				if(valu2>38)
 				{
 					valu2 = sin[b/10].l_max;
-					//fprintf(com,"%.1f\n",valu2);
 				}
 				else if(valu2<27)
 				{
 					valu2 = sin[b/10].l_min;
-					//fprintf(com,"%.1f\n",valu2);
 				}
 			}
 			else if(cnts==6)
@@ -924,8 +926,6 @@ float cal_dis(int a, int b)              //This function calculates distance wit
 				valu2 = atof(tmp2);
 			}	
 
-			//printf("\n%s\t%s",tmp1,tmp2);
-			//getch();
 			if(valu1>valu2)
 			{
 				sum = sum + (valu1-valu2);
@@ -940,13 +940,12 @@ float cal_dis(int a, int b)              //This function calculates distance wit
 
 	}
 
-	//printf("\nDistance (S1T1 -> S2T1):%.1f",sum);
-
 	fclose(com);
 	getch();
 	return sum;
 }
-float only_2()                                                     // THis function calculates distance considering only two attribute thermal data
+
+float only_2()  /* This function calculates distance considering only two attribute thermal data */
 {
 	char tmp1[20],tmp2[20];
 	int k,cnts=0,cnts1=0;
@@ -988,8 +987,6 @@ float only_2()                                                     // THis funct
 				valu2 = atof(tmp2);
 				cnts=0;
 			}	  
-			//printf("\n%s\t%s",tmp1,tmp2);
-			//getch();
 			if(valu1>valu2)
 			{
 				sum = sum + (valu1-valu2);
@@ -998,21 +995,17 @@ float only_2()                                                     // THis funct
 			{
 				sum = sum + (valu2-valu1);
 			}
-			//printf("\n Val1:%.1f,val2:%.1f,distance:%.1f",valu1,valu2,sum);
-			//getch();
 		}
 
 	}
 
-	//printf("\nDistance (S1T1 -> S2T1):%.1f",sum);
-	//getch();
 	return sum;
 
 
 
 }
-float cal_dis_nt()                                       //This function calculates distance without threshold
-{                                                        // THis function is used for choice : 1,2,3,4;
+float cal_dis_nt()                                       /* This function calculates distance without threshold */
+{                                                        /* This function is used for choice : 1,2,3,4; */
 
 	char tmp1[20],tmp2[20];
 	int k,count=0;
@@ -1031,8 +1024,6 @@ float cal_dis_nt()                                       //This function calcula
 		}
 		else
 		{
-			//printf("\n%d:%s\t%s",count,tmp1,tmp2);
-			//getch();
 			if(atof(tmp1)>atof(tmp2))
 			{
 				sum = sum + (atof(tmp1)-atof(tmp2));
@@ -1050,7 +1041,9 @@ float cal_dis_nt()                                       //This function calcula
 	return sum;
 
 }
-float cal_dis_d()                                               // This function calculates distance for only IR proximity sensor values
+float cal_dis_d()                         /* This function calculates distance 
+					     for only IR proximity sensor values.
+					   */
 {
 	char tmp1[20],tmp2[20];
 	int k,count=0;
@@ -1072,8 +1065,6 @@ float cal_dis_d()                                               // This function
 			count++;
 			if(count<=4)
 			{
-				//printf("\n%d:%s\t%s",count,tmp1,tmp2);
-				//getch();
 				if(atof(tmp1)>atof(tmp2))
 				{
 					sum = sum + (atof(tmp1)-atof(tmp2));
@@ -1095,7 +1086,9 @@ float cal_dis_d()                                               // This function
 	}
 	return sum;
 }  
-float cal_dis_t()                                          // This function calculates distance for only THermal Imaging sensor values
+float cal_dis_t()                        /* This function calculates distance 
+					    for only Thermal Imaging sensor values
+					  */
 {
 	char tmp1[20],tmp2[20];
 	int k,count=0;
@@ -1117,8 +1110,6 @@ float cal_dis_t()                                          // This function calc
 			count++;
 			if(count>4)
 			{
-				//printf("\n%d:%s\t%s",count,tmp1,tmp2);
-				//getch();
 				if(atof(tmp1)>atof(tmp2))
 				{
 					sum = sum + (atof(tmp1)-atof(tmp2));
@@ -1148,7 +1139,7 @@ void close_res()
 {
 	fclose(tmp);
 }
-void write_res()                                          // This function writes distance results to a excel file
+void write_res()          /* This function writes distance results to a excel file. */
 {
 	int i,j;
 	float ret;
@@ -1192,55 +1183,50 @@ void main()                                  // Main function
 	do
 	{
 		clrscr();
-		printf("\nMenu:\n1.Thermal and Distance- Distance Matrix (Press 1,2,3,4 for paths)\n2.Only IR data distance Matrix (Press 5,6,7,8 for path 1,2,3,4)\n3.Only Thermal(Press 9 to 12 for paths)\nEnter Choice:");
+		printf( " \nMenu:\n1.Thermal and Distance- Distance Matrix "       \
+			"(Press 1,2,3,4 for paths)\n2.Only IR data distance "      \
+			"Matrix (Press 5,6,7,8 for path 1,2,3,4)\n3.Only Thermal"  \
+			"(Press 9 to 12 for paths)\nEnter Choice:" );
 		scanf("%d",&ch);
 		switch(ch)
 		{
 			case 1:
 				{
 					set_links_1();
-					//max_min();
 					open_res();
 					write_res();
 					close_res();
 
 					set_links_2();
-					//max_min();
 					open_res_2();
 					write_res();
 					close_res();	
 
 					set_links_3();
-					//max_min();
 					open_res_3();
 					write_res();
 					close_res(); 
 
 					set_links_4();
-					//max_min();
 					open_res_4();
 					write_res();
 					close_res(); 
 					set_links_5();
-					//max_min();
 					open_res_5();
 					write_res();
 					close_res();  	 
 
 					set_links_6();
-					//max_min();
 					open_res_6();
 					write_res();
 					close_res();  	 
 
 					set_links_7();
-					//max_min();
 					open_res_7();
 					write_res();
 					close_res();  
 
 					set_links_8();
-					//max_min();
 					open_res_8();
 					write_res();
 					close_res();  	 
@@ -1251,46 +1237,38 @@ void main()                                  // Main function
 			case 2:
 				{
 					set_links_1();
-					//max_min();
 					open_res();
 					write_res();
 					close_res(); 
 					set_links_2();
-					//max_min();
 					open_res_2();
 					write_res();
 					close_res();
 					set_links_3();
-					//max_min();
 					open_res_3();
 					write_res();
 					close_res();  
 					set_links_4();
-					//max_min();
 					open_res_4();
 					write_res();
 					close_res();  
 
 					set_links_5();
-					//max_min();
 					open_res_5();
 					write_res();
 					close_res();  	 
 
 					set_links_6();
-					//max_min();
 					open_res_6();
 					write_res();
 					close_res();  	 
 
 					set_links_7();
-					//max_min();
 					open_res_7();
 					write_res();
 					close_res();  
 
 					set_links_8();
-					//max_min();
 					open_res_8();
 					write_res();
 					close_res();  	 
@@ -1299,46 +1277,38 @@ void main()                                  // Main function
 			case 3:
 				{
 					set_links_1();
-					//max_min();
 					open_res();
 					write_res();
 					close_res();  
 					set_links_2();
-					//max_min();
 					open_res_2();
 					write_res();
 					close_res(); 
 					set_links_3();
-					// max_min();
 					open_res_3();
 					write_res();
 					close_res();  
 					set_links_4();
-					//max_min();
 					open_res_4();
 					write_res();
 					close_res();
 
 					set_links_5();
-					//max_min();
 					open_res_5();
 					write_res();
 					close_res();  	 
 
 					set_links_6();
-					//max_min();
 					open_res_6();
 					write_res();
 					close_res();  	 
 
 					set_links_7();
-					//max_min();
 					open_res_7();
 					write_res();
 					close_res();  
 
 					set_links_8();
-					//max_min();
 					open_res_8();
 					write_res();
 					close_res();  	 
@@ -1351,7 +1321,3 @@ void main()                                  // Main function
 	}while(ag==1);
 	getch();
 }
-
-
-
-

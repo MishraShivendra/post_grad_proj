@@ -1,13 +1,13 @@
-/** @fil kmedoids
- * This program is used to cluster the given data into various clusters using k-medoids clustering algorithm.
- * Input is the DTW distance matrix.
- * Output is the set of various clusters.
+/* File : kmedoids
+ * Following is the implementation of k-medoids clustering algorithm.
+ * Input : Distance matrix calculated using Manhattan or Euclidean 
+ *         distance in the previous phases. 
+ * Output : Set of clusters in text files.
  *
  * @date 15-05-2014
  *
  */
-//HEADER FILES
-#include<conio.h>
+/* Header Files */
 #include<iostream.h>
 #include<math.h>
 #include<fstream.h>
@@ -15,28 +15,26 @@
 #include<string.h>
 #include<stdlib.h>
 #include<time.h>
-//#include<cstdlib.h>
-#include<string.h>
 #include<errno.h>
-//using namespace std;
+
 fstream fil;
 
 
-// VARIABLE DECLARATIONS
+#define NO_OF_PATH 8
 FILE *res;
 const int NO_OF_FILES_READ = 70;
-int K,path; 				// vale of k in k-medoid
+int K,path; 		
 int representative_object[15];
-float dtwdist[NO_OF_FILES_READ][NO_OF_FILES_READ];    /* DTW dtwdistance matrix*/
+float dtwdist[NO_OF_FILES_READ][NO_OF_FILES_READ];    /* DTW distance matrix*/
 struct links
 {
 	char ips[35];
-}link[8];
+}link[NO_OF_PATH];
 struct label
 {
 	int cluster_no;
 	char filename[20];
-}trial[70];
+}trial[NO_OF_FILES_READ];
 
 void set_links()
 {
@@ -50,8 +48,9 @@ void set_links()
 	strcpy(link[7].ips,"8.xls");
 }
 
-//FUNCTION DEFINITIONS
-void Read_dist_matrix(int l)                    //read dist matrix and write to dtwdist[][]
+
+void Read_dist_matrix(int l)                    
+/*read dist matrix and write to dtwdist[][]*/
 {
 	char ch,temp[30];
 	int i, j,count=0,ind=0;
@@ -63,11 +62,11 @@ void Read_dist_matrix(int l)                    //read dist matrix and write to 
 		cout<<":Opening file!";
 
 	}
-	for(i=0;i<=69;i++)
+	for(i=0;i<=NO_OF_FILES_READ - 1;i++)
 	{
 		fscanf(in,"%s",&temp);
 	}
-	for(i=0;i<=69;i++)
+	for(i=0;i<=NO_OF_FILES_READ - 1;i++)
 	{
 		trial[i].cluster_no = i;
 	}
@@ -81,39 +80,46 @@ void Read_dist_matrix(int l)                    //read dist matrix and write to 
 			}
 
 			fscanf(in,"%s",&temp);
-			dtwdist[i][j] = atof(temp);      //;
+			dtwdist[i][j] = atof(temp);      
 
 		}
 	}
 	fclose(in);
-	for(i=0;i<=69;i++)
+	/* In case I need to print. */
+	/*
+	for(i=0;i<=NO_OF_FILES_READ - 1;i++)
 	{
-		for(j=0;j<=69;j++)
+		for(j=0;j<=NO_OF_FILES_READ - 1;j++)
 		{
-			//cout<<"\n["<<i<<"]["<<j<<"]:"<<dtwdist[i][j];
-			//getch();
+			cout<<"\n["<<i<<"]["<<j<<"]:"<<dtwdist[i][j];
+			getch();
 		}
 	}
+	*/
 }
 
-// This function returns the cluster number of the nearest representative object.
-//  
-// to the object given as argument. 
+/* This function returns the cluster number 
+ * of the nearest representative object to 
+ * the object given as argument.
+ */
 int nearest_cluster(int object) 
 {
 	int i, min_ele=0;
 	for (i=0; i<K; i++)
 	{
-		if (representative_object[i] == object) return i;  // i.e., if object is a representative object
+		if (representative_object[i] == object) return i; 
+		/* i.e., if object is a representative object */
 		else if (dtwdist[object][representative_object[i]] < dtwdist[object][representative_object[min_ele]])	
 			min_ele = i;
 	}
 	return min_ele;
 }
 
-// Select a new representative object randomly. 
-// Make sure that the object selected is not already a representative object. 
-// Function returns the index of the new 
+/* Select a new representative object randomly.
+ * Make sure that the object selected is not already 
+ * a representative object. Function returns
+ * the index of the new.
+ */
 int new_random_object()
 {
 	int ele, i;
@@ -121,11 +127,13 @@ int new_random_object()
 	do                                                                                                         
 	{  
 		unique = 1;
-		ele = rand() % NO_OF_FILES_READ;          // select a new rep object randomly
+		ele = rand() % NO_OF_FILES_READ;          /* select a new rep object randomly */
 
 		for (i=0; i<K; i++)
 		{
-			if (ele == representative_object[i])   // new rep object must be one of the current non rep objects
+			if (ele == representative_object[i])   /* new rep object must be 
+								  one of the current non rep 
+								  objects */
 			{
 				unique = 0;
 				break;
@@ -136,8 +144,11 @@ int new_random_object()
 	return ele;
 }
 
-// This function selects a random set of initial representative objects
-// Function return the sum of distances between an object and its representative object.
+/* This function selects a random set of initial 
+ * representative objects.Function return the sum 
+ * of distances between an object and its representative 
+ * object.
+ */
 float initialise_clusters()
 {
 	int i, cluster;
@@ -156,7 +167,9 @@ void open_res()
 	res = fopen("res.xls","w");
 }
 
-// This function displays  memebrs of the current set of clusters.
+/* This function displays  memebrs of the 
+ * current set of clusters.
+ */
 void display_clusters()
 {
 	int i, cluster, rep_object;
@@ -178,7 +191,7 @@ void display_clusters()
 	}
 }
 
-// This function implements the kmedoid algorithm.
+/* This function implements the kmedoid algorithm. */
 
 void form_cluster(int f)
 {
@@ -187,10 +200,10 @@ void form_cluster(int f)
 	int changed;
 	fprintf(res,"\n\n\n\t\t\t\t\t\t\t\tPath:%d\n",path);
 	set_links();
-	Read_dist_matrix(f);                          // Read the DTW matrix from file
+	Read_dist_matrix(f);                          /* Read the DTW matrix from file*/
 
-	total_dist = initialise_clusters();		// Find the cumulative distance of initial cluster set
-	fprintf(res,"\nInitial cluster distance is:%.1f\n",total_dist);     // Cluster reformation is iterated 200 times.
+	total_dist = initialise_clusters();		/* Find the cumulative distance of initial cluster set */
+	fprintf(res,"\nInitial cluster distance is:%.1f\n",total_dist);     /* Cluster reformation is iterated 200 times.*/
 	for (epoch=0; epoch < 200; epoch ++)
 	{
 		changed = 0;
@@ -217,7 +230,7 @@ void form_cluster(int f)
 		{
 			fprintf(res,"\nEPOCH Number:%d\n",epoch);
 			fprintf(res,"\nTotal distance is:%.1f\n",total_dist);
-			//		display_clusters();
+			/*display_clusters(); In case I just want to display results.*/
 		}
 	}
 	display_clusters();
@@ -231,17 +244,16 @@ int main()
 		clrscr();
 		cout<<"\nEnter number of Cluster(K):";
 		cin>>K;
-		for(path=0;path<=7;path++)
+		for(path=0; path<=NO_OF_PATH; path++)
 		{
 			form_cluster(path);
 			cout<<"\nCalculating Path:"<<path;	
 		}  
-		cout<<"\nTo continue,Press1:";
+		cout<<"\nTo continue,Press 1:";
 		cin>>ag;
 	}while(ag==1);
 	fclose(res);
-	getch();  
-
+	getch();
 	return 0;
 
 }
