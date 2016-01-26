@@ -19,6 +19,15 @@ This project implements system for analysis and detection of objects in experime
 |3.|Distance calculation                       |  [manhattan_distance_matrix.c](https://github.com/MishraShivendra/post_grad_proj/blob/master/manhattan_distance_matrix.c), [multi_manhattan_distance.c](https://github.com/MishraShivendra/post_grad_proj/blob/master/multi_manhattan_distance.c) |
 |4.|Clustering                                 |  [k_medoid_clustering.cpp](https://github.com/MishraShivendra/post_grad_proj/blob/master/k_medoid_clustering.cpp)                                 |
 
+####How to Compile
+If you want to do frequencey analysis of audio samples, then open/run the *.m files written in the pre-processing row (in Matlab 2011a). pre_processing_multi.c file is to be used for pre-processing thermal imaging/proximity sensor data.
+```bash
+$ svn co https://github.com/MishraShivendra/post_grad_proj.git
+```
+Compile the pre-processor:
+```bash
+$ gcc 
+```
 
 ####Further reading 
 - [project site](http://goo.gl/56nCqb)
