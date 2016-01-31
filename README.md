@@ -26,7 +26,22 @@ $ svn co https://github.com/MishraShivendra/post_grad_proj.git
 ```
 Compile the pre-processor:
 ```bash
-$ gcc 
+$ cd post_grad_proj.git/trunk 
+$ gcc -pthread pre_processing_multi.c -o pre_processor
+$ # See the pre-processor options
+$ ./pre_processor -h
+
+Multi-threaded Preprocessing options:
+-h, --help         Show this help and exit.
+-r, --result-file  Excepts result file locations.
+-i, --input-file   Expects input file locations.
+
+Input file and result file directories are required.
+$ # Prepare a directory for processed data
+$ cp -r ./data/ ./processed_data
+$
+$ ./pre_processor -i data -r ./processed_data
+100.00% files Pre-Processed......
 ```
 
 ####Further reading 
