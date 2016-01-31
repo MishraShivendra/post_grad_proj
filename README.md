@@ -39,7 +39,7 @@ Multi-threaded Preprocessing options:
 Input file and result file directories are required.
 $ # Prepare a directory for processed data
 $ cp -r ./data/ ./processed_data
-$
+$ #wait for pre_processor to be 100%
 $ ./pre_processor -i data -r ./processed_data
 100.00% files Pre-Processed......
 ```
