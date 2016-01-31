@@ -84,22 +84,22 @@ feed_links ( const char *link )
 	static int result_seven_iterator = 0;
 
 
-	if (    (scenario_one_iterator > TOTAL_TRIALS-1) || (scenario_two_iterator > TOTAL_TRIALS-1)
-			|| (scenario_three_iterator > TOTAL_TRIALS-1) || (scenario_four_iterator > TOTAL_TRIALS-1)
-			|| (scenario_five_iterator > TOTAL_TRIALS-1) || (scenario_six_iterator > TOTAL_TRIALS-1)
-			|| (scenario_seven_iterator > TOTAL_TRIALS-1) ) {
+	if (    (scenario_one_iterator > TOTAL_TRIALS) || (scenario_two_iterator > TOTAL_TRIALS)
+			|| (scenario_three_iterator > TOTAL_TRIALS) || (scenario_four_iterator > TOTAL_TRIALS)
+			|| (scenario_five_iterator > TOTAL_TRIALS) || (scenario_six_iterator > TOTAL_TRIALS)
+			|| (scenario_seven_iterator > TOTAL_TRIALS) ) {
 		printf ( "\nInvalid entries in directory.\n" );
 		exit(0);	
 	}
-	if (    (result_one_iterator > TOTAL_TRIALS-1) || (result_two_iterator > TOTAL_TRIALS-1)
-			|| (result_three_iterator > TOTAL_TRIALS-1) || (result_four_iterator > TOTAL_TRIALS-1)
-			|| (result_five_iterator > TOTAL_TRIALS-1) || (result_six_iterator > TOTAL_TRIALS-1)
-			|| (result_seven_iterator > TOTAL_TRIALS-1) ) {
-		printf ( "\nInvalid entries in result directory.\n" );
+	if (    (result_one_iterator > TOTAL_TRIALS) || (result_two_iterator > TOTAL_TRIALS)
+			|| (result_three_iterator > TOTAL_TRIALS) || (result_four_iterator > TOTAL_TRIALS)
+			|| (result_five_iterator > TOTAL_TRIALS) || (result_six_iterator > TOTAL_TRIALS)
+			|| (result_seven_iterator > TOTAL_TRIALS) ) {
+		printf ( "\nres Invalid entries in result directory.\n" );
 		exit(0);	
 	}
-
-	if ( strcasecmp( link, "SC_1" ) == 0 ) {
+	//printf ( "link:%s\n",link==NULL?"null":link );
+	if ( strstr( link, "SC_1" ) != NULL ) {
 		if ( is_input_file ) {
 			links[SCENARIO_1][scenario_one_iterator].ip=strdup(link);
 			scenario_one_iterator++;
@@ -107,7 +107,7 @@ feed_links ( const char *link )
 			links[SCENARIO_1][result_one_iterator].resl=strdup(link);
 			result_one_iterator++;	
 		}
-	}else if ( strcasecmp( link, "SC_2" ) == 0 ) {
+	}else if ( strstr( link, "SC_2" ) != NULL ) {
 		if ( is_input_file ) {
 			links[SCENARIO_2][scenario_two_iterator].ip=strdup(link);
 			scenario_two_iterator++;
@@ -115,7 +115,7 @@ feed_links ( const char *link )
 			links[SCENARIO_2][result_two_iterator].resl=strdup(link);
 			result_two_iterator++;	
 		}
-	}else if ( strcasecmp( link, "SC_3" ) == 0 ) {
+	}else if ( strstr( link, "SC_3" ) != NULL ) {
 		if ( is_input_file ) {
 			links[SCENARIO_3][scenario_three_iterator].ip=strdup(link);
 			scenario_three_iterator++;
@@ -124,7 +124,7 @@ feed_links ( const char *link )
 			result_three_iterator++;
 
 		}
-	}else if ( strcasecmp( link, "SC_4" ) == 0 ) {
+	}else if ( strstr( link, "SC_4" ) != NULL ) {
 		if ( is_input_file ) {
 			links[SCENARIO_4][scenario_four_iterator].ip=strdup(link);
 			scenario_four_iterator++;
@@ -132,7 +132,7 @@ feed_links ( const char *link )
 			links[SCENARIO_4][result_four_iterator].resl=strdup(link);
 			result_four_iterator++;	
 		}
-	}else if ( strcasecmp( link, "SC_5" ) == 0 ) {
+	}else if ( strstr( link, "SC_5" ) != NULL ) {
 		if ( is_input_file ) {
 			links[SCENARIO_5][scenario_five_iterator].ip=strdup(link);
 			scenario_five_iterator++;
@@ -140,7 +140,7 @@ feed_links ( const char *link )
 			links[SCENARIO_5][result_five_iterator].resl=strdup(link);
 			result_five_iterator++;	
 		}
-	}else if ( strcasecmp( link, "SC_6" ) == 0 ) {
+	}else if ( strstr( link, "SC_6" ) != NULL ) {
 		if ( is_input_file ) {
 			links[SCENARIO_6][scenario_six_iterator].ip=strdup(link);
 			scenario_six_iterator++;
@@ -148,7 +148,7 @@ feed_links ( const char *link )
 			links[SCENARIO_6][result_six_iterator].resl=strdup(link);
 			result_six_iterator++;	
 		}
-	}else if ( strcasecmp( link, "SC_7" ) == 0 ) {
+	}else if ( strstr( link, "SC_7" ) != NULL ) {
 		if ( is_input_file ) {
 			links[SCENARIO_7][scenario_seven_iterator].ip=strdup(link);
 			scenario_seven_iterator++;
@@ -157,9 +157,12 @@ feed_links ( const char *link )
 			result_seven_iterator++;		
 		}
 	}else {
-		printf ( "\n Invalid entries in directory.\n" );
+		printf ( "\n count Invalid entries in directory.\n");
 		exit(0);
 	} 	
+	//printf ( "\nentries in directory.%d %d %d %d %d %d %d\n",scenario_three_iterator, scenario_one_iterator, 
+				//scenario_two_iterator, scenario_four_iterator, scenario_five_iterator, scenario_six_iterator,
+				//scenario_seven_iterator );
 
 }
 
@@ -267,26 +270,27 @@ void src_des(int sc, int no)    /* Set source destination file   (Argument is fi
 			op[sc][NO_OF_SCENARIOS] = '\0';
 			break;
 	}
-
 }
 void open_fil(int sc)							/* open file*/
 {
 
+	//printf ( "opening[%d]:%s op:%s\n",sc,ip[sc],op[sc]);
 	src[sc] = fopen(ip[sc], "r+");					/* Open I/O file */
-	temp[sc] = fopen(op[sc], "r+");
-
 	if(src[sc] == NULL )						/* Notify Error */
 	{
-		perror(ip[sc]);
+		perror(ip[sc]==NULL?"ip NULL":ip[sc]);
 	}
+	
+	temp[sc] = fopen(op[sc], "r+");
+
 	if(temp[sc] == NULL)
 	{
-		perror(op[sc]);
+		perror(op[sc]==NULL?"op NULL":op[sc]);
 	}
 }
 void clr_tmp(int sc)							/* Clear temp file (proximity sensor data) */
 {
-	temp[sc] = fopen(op[sc],"w");                                                        
+	temp[sc] = fopen(op[sc],"w");                                                 
 	fclose(temp[sc]);
 }
 void coppy(int sc)							/* Copy data from temp 
@@ -298,6 +302,9 @@ void coppy(int sc)							/* Copy data from temp
 	rewind(temp[sc]);
 	fclose(src[sc]);
 	src[sc] = fopen(ip[sc], "w");
+	if ( src[sc] == NULL ) {
+		perror( ip[sc] );
+	}
 	rewind(src[sc]);
 	while(1)
 	{
@@ -321,7 +328,7 @@ void new_lin_spa(int sc)                                                   /* re
 	rewind(src[sc]);
 	rewind(temp[sc]);
 
-	while(true)
+	while(1)
 	{
 		tmp[sc] = fgetc(src[sc]);
 		if(tmp[sc] == EOF)
@@ -352,6 +359,7 @@ void double_agnt(int sc)					/* This function removes
 								   redundant spaces in file */
 {
 	int rs=0;
+	
 	rewind(temp[sc]);
 	rewind(src[sc]);
 
@@ -737,9 +745,9 @@ void fis(int sc, int re)
  * the link for input/output
  * files.
  */
-void procs_sc(int *sce)
+void procs_sc(void *sce)
 {
-	int i,si = (*sce);
+	int i, sc = *((int*)sce);
 	/* Not required anymore - posix library does the job.
 	   switch(si)
 	   {
@@ -786,21 +794,22 @@ void procs_sc(int *sce)
 	   break;
 	   }
 	   }*/
-	for(i=0;i<=TOTAL_TRIALS;i++)
+	for(i=0;i<TOTAL_TRIALS;i++)
 	{
-		src_des(si,i);
-		clr_tmp(si);
-		open_fil(si);
-		new_lin_spa(si);
-		kloj(si);
-		open_fil(si);
-		double_agnt(si);
-		kloj(si);
-		open_fil(si);
-		double_agent_x(si);
-		kloj(si);
-		writ(si);
-		fis(si,i);
+		
+		src_des(sc,i);
+		clr_tmp(sc);
+		open_fil(sc);
+		new_lin_spa(sc);
+		kloj(sc);
+		open_fil(sc);
+		double_agnt(sc);
+		kloj(sc);
+		open_fil(sc);
+		double_agent_x(sc);
+		kloj(sc);
+		writ(sc);
+		fis(sc,i);
 		/* Argument defines 
 		 * result file's link
 		 */
@@ -872,16 +881,16 @@ show_help () {
 	printf ( "-h, --help         Show this help and exit.\n" );
 	printf ( "-r, --result-file  Excepts result file locations.\n");
 	printf ( "-i, --input-file   Expects input file locations.\n" );
-
 }
 
 
 int main( int argc, char *argv[])
 {
 
-	int i;
+	int i,j;
 	char my_err[10];
 	pthread_t th[8];
+	int *argument[NO_OF_SCENARIOS];
 	int option = 0;
 	char *result_file_dir = NULL;
 	char *input_file_dir = NULL;
@@ -918,7 +927,12 @@ int main( int argc, char *argv[])
 	print_directory_tree( input_file_dir );
 	is_input_file = 0;
 	print_directory_tree( result_file_dir );
-	printf("\e[?25l");		/* hide the cursor */
+/*	for ( i=0; i<NO_OF_SCENARIOS; i++ ) {
+		for( j=0; j<TOTAL_TRIALS;j++) {
+			printf ( "ip[%d][%d]:%s op:%s\n ",i,j,links[i][j].ip, links[i][j].resl );
+		}
+	}
+*/	printf("\e[?25l");		/* hide the cursor */
 
 pre_proces:
 	{
@@ -928,9 +942,13 @@ pre_proces:
 			sprintf(my_err,"create[%d]",i);
 			perror(my_err);
 		}
+		//procs_sc(0);
+	
 		for(i=0;i<=NO_OF_SCENARIOS-1;i++)
 		{
-			if(pthread_create(&th[i],NULL,(void *)&procs_sc,(void *)&i))
+			argument[i] = (int*) malloc( sizeof(int));
+			*argument[i] = i;
+			if(pthread_create(&th[i],NULL,(void *)&procs_sc,argument[i]))
 			{
 				sprintf(my_err,"create[%d]",i);
 				perror(my_err);
@@ -961,6 +979,8 @@ pre_proces:
 	}
 	/* show the cursor */
 	printf("\e[?25h");
+	for ( i=0; i<NO_OF_SCENARIOS;i++)
+	free(argument[i]);
 	return 0;
 }
 #else
