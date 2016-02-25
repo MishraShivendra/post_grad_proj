@@ -50,5 +50,5 @@ The matrix calculation and clustering code is straight forward. Compilation and 
 - [Publication-On Springer page](http://link.springer.com/chapter/10.1007%2F978-81-322-2202-6_44)
 
 ####Write to me
-I am looking forward to collaborate with people in this project as well other projects. Please feel free to write me an e-mail to:
-shivendra _ mishra at live com
+I am looking forward to collaborate with people in this project as well other projects. Please feel free to write me an e-mail:
+shivendra _ mishra at live dot com
