@@ -41,9 +41,14 @@ $ # Prepare a directory for processed data
 $ cp -r ./data/ ./processed_data
 $ #wait for pre_processor to be 100%
 $ ./pre_processor -i data -r ./processed_data
-100.00% files Pre-Processed......
+100.00% files Pre-Processed.
 ```
+The matrix calculation and clustering code is straight forward. Compilation and run should do the job.
 
 ####Further reading 
 - [project site](http://goo.gl/56nCqb)
 - [Publication-On Springer page](http://link.springer.com/chapter/10.1007%2F978-81-322-2202-6_44)
+
+####Write to me
+I am looking forward to collaborate with people in this project as well other projects. Please feel free to write me an e-mail to:
+shivendra _ mishra at live com
