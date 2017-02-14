@@ -7,9 +7,12 @@
  *
  *
  * Environment: Geany with gcc (Only on linux)
- * Input: Hex file from system file ./data/SCx_/Sx_Sy/Sx_Sy_t.txt      Where x,y are path directions and t is trial.
- * Output: Pre-Processed data (16 Attributes=4(IR Proximity Sensor) + 32(MEMS Thermal Imaging Sensor ))
- * Execution: Execute and choose 9 from Menu; If it is required to process step by step choose accordingly from menu.
+ * Input: Hex file from system file ./data/SCx_/Sx_Sy/Sx_Sy_t.txt      
+ * Where x,y are path directions and t is trial.
+ * Output: Pre-Processed data (16 Attributes = 4(IR Proximity Sensor) 
+ * + 32(MEMS Thermal Imaging Sensor ))
+ * Execution: Execute and choose 9 from Menu; If it is required to 
+ * process step by step choose accordingly from menu.
  */
 
 #include "pre_processing_multi.h"
@@ -37,17 +40,23 @@ feed_links ( const char *link )
 	static int result_seven_iterator = 0;
 
 
-	if (    (scenario_one_iterator > TOTAL_TRIALS) || (scenario_two_iterator > TOTAL_TRIALS)
-			|| (scenario_three_iterator > TOTAL_TRIALS) || (scenario_four_iterator > TOTAL_TRIALS)
-			|| (scenario_five_iterator > TOTAL_TRIALS) || (scenario_six_iterator > TOTAL_TRIALS)
-			|| (scenario_seven_iterator > TOTAL_TRIALS) ) {
+	if (    (scenario_one_iterator > TOTAL_TRIALS) || 
+		(scenario_two_iterator > TOTAL_TRIALS) || 
+		(scenario_three_iterator > TOTAL_TRIALS) || 
+		(scenario_four_iterator > TOTAL_TRIALS) || 
+		(scenario_five_iterator > TOTAL_TRIALS) || 
+		(scenario_six_iterator > TOTAL_TRIALS) || 
+		(scenario_seven_iterator > TOTAL_TRIALS) ) {
 		printf ( "\nInvalid entries in directory.\n" );
 		exit(0);	
 	}
-	if (    (result_one_iterator > TOTAL_TRIALS) || (result_two_iterator > TOTAL_TRIALS)
-			|| (result_three_iterator > TOTAL_TRIALS) || (result_four_iterator > TOTAL_TRIALS)
-			|| (result_five_iterator > TOTAL_TRIALS) || (result_six_iterator > TOTAL_TRIALS)
-			|| (result_seven_iterator > TOTAL_TRIALS) ) {
+	if (    (result_one_iterator > TOTAL_TRIALS) || 
+		(result_two_iterator > TOTAL_TRIALS) || 
+		(result_three_iterator > TOTAL_TRIALS) || 
+		(result_four_iterator > TOTAL_TRIALS) || 
+		(result_five_iterator > TOTAL_TRIALS) || 
+		(result_six_iterator > TOTAL_TRIALS) || 
+		(result_seven_iterator > TOTAL_TRIALS) ) {
 		printf ( "\nres Invalid entries in result directory.\n" );
 		exit(0);	
 	}
@@ -113,8 +122,10 @@ feed_links ( const char *link )
 		printf ( "\n count Invalid entries in directory.\n");
 		exit(0);
 	} 	
-	/*printf ( "\nentries in directory.%d %d %d %d %d %d %d\n",scenario_three_iterator, scenario_one_iterator, 
-	//scenario_two_iterator, scenario_four_iterator, scenario_five_iterator, scenario_six_iterator,
+	/*printf ( "\nentries in directory.%d %d %d %d %d %d %d\n",
+	 * 			scenario_three_iterator, scenario_one_iterator, 
+	//scenario_two_iterator, scenario_four_iterator, 
+	//scenario_five_iterator, scenario_six_iterator,
 	//scenario_seven_iterator );*/
 
 }
@@ -190,7 +201,9 @@ print_directory_tree(const char *const dirpath)
 
 
 void 
-feed_io_file_to_struct(int sc, int no)    /* Set source destination file   (Argument is file no range between 0-69)*/       
+feed_io_file_to_struct(int sc, int no)    /* Set source destination file   
+					     (Argument is file no range 
+					     between 0-69)*/       
 {
 	strncpy(ip[sc],links[sc][no].ip,strlen(links[sc][no].ip));
 	ip[sc][strlen(links[sc][no].ip)] = '\0';
@@ -233,12 +246,12 @@ feed_io_file_to_struct(int sc, int no)    /* Set source destination file   (Argu
 
 	
 void 
-open_data_file(int sc)							/* open file*/
+open_data_file(int sc)				/* open file*/
 {
 
 	printf ( "opening[%d]:%s op:%s\n",sc,ip[sc],op[sc]);
-	src[sc] = fopen(ip[sc], "r+");					/* Open I/O file */
-	if(src[sc] == NULL )						/* Notify Error */
+	src[sc] = fopen(ip[sc], "r+");			/* Open I/O file */
+	if(src[sc] == NULL )				/* Notify Error */
 	{
 		perror(ip[sc]==NULL?"ip NULL":ip[sc]);
 	}
@@ -252,19 +265,19 @@ open_data_file(int sc)							/* open file*/
 
 
 void 
-clear_temp_file(int sc)							/* Clear temp file (proximity sensor data) */
+clear_temp_file(int sc)		/* Clear temp file (proximity sensor data) */
 {
-	temp[sc] = fopen(op[sc],"w");                                                 
+	temp[sc] = fopen(op[sc],"w");                                           
 	fclose(temp[sc]);
 }
 
 void 
-write_back_from_temp(int sc)							        /* Copy data from temp 
-											   file to raw data file */
-{									/* This function is used 
-									   while removing redundant 
-									   new lines/spaces in raw 
-									   data file */
+write_back_from_temp(int sc)			    /* Copy data from temp 
+						       file to raw data file */
+{						    /* This function is used 
+						       while removing redundant 
+						       new lines/spaces in raw 
+						       data file */
 	rewind(temp[sc]);
 	fclose(src[sc]);
 	src[sc] = fopen(ip[sc], "w");
@@ -290,9 +303,9 @@ write_back_from_temp(int sc)							        /* Copy data from temp
 	
 	
 void 
-remove_new_lines(int sc)                                                        /* removes unwanted 
-										   new line and replaces 
-										   with space */
+remove_new_lines(int sc)                           /* removes unwanted 
+						      new line and replaces 
+						      with space */
 {
 	int no=0;
 	rewind(src[sc]);
@@ -306,8 +319,8 @@ remove_new_lines(int sc)                                                        
 			break;
 		}
 
-		if(no == 2)							/* replacing new lines 
-										   with spaces*/
+		if(no == 2)				/* replacing new lines 
+							   with spaces*/
 		{
 			fputc(' ',temp[sc]);
 			no =0;
@@ -316,8 +329,10 @@ remove_new_lines(int sc)                                                        
 		{
 			fputc(tmp[sc],temp[sc]);
 		}
-		/* If they were hex char than no++ - sorry for magic numbers*/
-		if(((tmp[sc] >= 65) && (tmp[sc] <= 90)) || ((tmp[sc] >= 48) && (tmp[sc] <= 57)))
+		/* If they were hex char than no++ - 
+		 * sorry for magic numbers*/
+		if(((tmp[sc] >= 65) && (tmp[sc] <= 90)) || 
+		   ((tmp[sc] >= 48) && (tmp[sc] <= 57)))
 		{
 			no++;
 		}
@@ -326,14 +341,14 @@ remove_new_lines(int sc)                                                        
 
 }
 void 
-remove_spaces_from_file(int sc)					        /* This function removes 
-									   redundant spaces in file */
+remove_spaces_from_file(int sc)		/* This function removes 
+					   redundant spaces in file */
 {
 	int rs=0;
 	rewind(temp[sc]);
 	rewind(src[sc]);
 
-	while(1)							/* removing redundant spaces */
+	while(1)			/* removing redundant spaces */
 	{
 		tmp[sc] = fgetc(src[sc]);
 		if(tmp[sc]==EOF)
@@ -363,16 +378,16 @@ remove_spaces_from_file(int sc)					        /* This function removes
 }
 
 void 
-remove_trailing_new_lines(int sc)					        /* This function removes new 
-										   lines in raw data file */
+remove_trailing_new_lines(int sc)		/* This function removes new 
+						   lines in raw data file */
 {
 	int rs=0;
 	rewind(temp[sc]);
 	rewind(src[sc]);
 
-	while(1)						/* Look for new lines, 
-								   if it occurs twice remove 
-								   and replace with space*/
+	while(1)				/* Look for new lines, 
+						   if it occurs twice remove 
+						   and replace with space*/
 	{
 		tmp[sc] = fgetc(src[sc]);
 		if(tmp[sc]==EOF)
@@ -401,38 +416,40 @@ remove_trailing_new_lines(int sc)					        /* This function removes new
 }
 
 void 
-continue_dialog_prompt()							        /* Function prompts option 
-											   to execute this program 
-											   again */
+continue_dialog_prompt()			/* Function prompts option 
+						   to execute this program 
+						   again */
 {
 	printf("\n To continue, press 1:");
 	scanf(" %d",&ag);
 }
 
 void 
-close_data_file(int sc)						        /* This function closes 
-									   I/o files */
+close_data_file(int sc)				        /* This function closes 
+							   I/o files */
 {
 	fclose(src[sc]);
 	fclose(temp[sc]);
 }  
 
 void 
-process_thermal_image(int sc)						        /* This function calculates 
-										   temperature if 35byte of 
-										   data is provided */
+process_thermal_image(int sc)			    /* This function calculates 
+						       temperature if 35byte of 
+						       data is provided */
 {
 	unsigned char tpec1;
 	unsigned int tp1[THERMAL_IMAGE_RESO],tptat1;  
 	int k;
 	int pixel=0;
 	int buffer_iterator=2;
-	tptat1 = 256*readbuff1[sc][1] + readbuff1[sc][0];	/* why magic number 256? 
-								 * Copy 35 byte and group 
-								 * them for 2byte/pixel 
-								 */
+	tptat1 = 256*readbuff1[sc][1] + readbuff1[sc][0];	
+	/* why magic number 256? 
+	 * Copy 35 byte and group 
+	 * them for 2byte/pixel 
+	 */
 	for ( pixel=0; pixel<=THERMAL_IMAGE_RESO; pixel++ ) {
-		tp1[pixel] = 256*readbuff1[sc][buffer_iterator+1] + readbuff1[sc][buffer_iterator];
+		tp1[pixel] = 256*readbuff1[sc][buffer_iterator+1] + 
+			     readbuff1[sc][buffer_iterator];
 		buffer_iterator = buffer_iterator + 2;
 	}
 
@@ -444,8 +461,8 @@ process_thermal_image(int sc)						        /* This function calculates
 	 */
 	for(k=0;k<=THERMAL_IMAGE_RESO;k++)
 	{
-		fl1[sc][k] = tp1[k]/10.0;					/* Divide 2byte by 10 
-										   get temperature */
+		fl1[sc][k] = tp1[k]/10.0;		/* Divide 2byte by 10 
+							   get temperature */
 	}
 	/* ft1 = tptat1/10.0;
 	 * Calculating Reference 
@@ -532,8 +549,10 @@ process_proximity_sensor_data(int sc)
 				fscanf(temp11,"%x",&tep);
 				if(arr == 1)
 				{
-					/* Magic numbers adopted from the data sheet of proximity sensor */
-					val[r] = (((10.00*((1.00/((0.001240875*(tep))+0.005))-0.42))))/10;
+					/* Magic numbers adopted from 
+					 * the data sheet of proximity sensor */
+					val[r] = (((10.00*((1.00/((0.001240875*
+						  (tep))+0.005))-0.42))))/10;
 					if(r==4)
 					{
 						arr++;
@@ -541,7 +560,8 @@ process_proximity_sensor_data(int sc)
 				}
 				else if(arr==2)
 				{
-					val1[r] = (((10.00*((1.00/((0.001240875*(tep))+0.005))-0.42))))/10;
+					val1[r] = (((10.00*((1.00/((0.001240875*
+						  (tep))+0.005))-0.42))))/10;
 					if(r==4)
 					{
 						arr=1;
@@ -553,10 +573,11 @@ process_proximity_sensor_data(int sc)
 			{
 				for(x=0;x<=4;x++)
 				{
-					ops[x] = val[x];					/* For averaging replace 
-												 * it with ops[x] = 
-												 * (val[x] + val1[x])/2;
-												 */
+					ops[x] = val[x];
+					/* For averaging replace 
+					 * it with ops[x] = 
+					 * (val[x] + val1[x])/2;
+					 */
 					fprintf(duri,"%.1f\t",ops[x]);
 					val[x] = 0;
 					val1[x] = 0;
@@ -586,7 +607,7 @@ process_proximity_sensor_data(int sc)
  * all function written before;
  */
 void 
-write_processed_data_to_file(int sc, int re)                                         
+write_processed_data_to_file(int sc, int re)                                    
 {   
 	char duriya[30],valu[10];
 	unsigned int tep;
@@ -728,7 +749,8 @@ void
 prcoess_raw_data_files(void *sce)
 {
 	int i, sc = *((int*)sce);
-	/* Not required anymore - posix library does the job.
+#ifdef MANUAL_DIR
+	/* Not required anymore - posix library does the job.*/
 	   switch(si)
 	   {
 	   case 0:
@@ -773,7 +795,8 @@ prcoess_raw_data_files(void *sce)
 	   res_links_7();
 	   break;
 	   }
-	   }*/
+	   }
+#endif
 
 
 	for(i=0;i<TOTAL_TRIALS;i++)
@@ -886,7 +909,8 @@ main( int argc, char *argv[])
 		{"help",        0, NULL, 'h'},
 		{NULL,          0, NULL,  0}
 	};
-	while ( (option = getopt_long( argc, argv, short_option, long_options, NULL ) )> 0 ) {
+	while ( (option = getopt_long( argc, argv, short_option, 
+					long_options, NULL ) )> 0 ) {
 		switch ( option ) {
 			case 'r':
 				result_file_dir = optarg;
@@ -906,7 +930,8 @@ main( int argc, char *argv[])
 		} 
 	}
 	if ( (result_file_dir == NULL) || ( input_file_dir == NULL ) ) {
-		printf ( "\nInput file and result file directories are required.\n" );
+		printf ( "\nInput file and result file directories "\
+			 "are required.\n" );
 		exit(0);
 	}
 	print_directory_tree( input_file_dir );
@@ -914,7 +939,8 @@ main( int argc, char *argv[])
 	print_directory_tree( result_file_dir );
 		for ( i=0; i<NO_OF_SCENARIOS; i++ ) {
 		for( j=0; j<TOTAL_TRIALS;j++) {
-		printf ( "ip[%d][%d]:%s op:%s\n ",i,j,links[i][j].ip, links[i][j].resl );
+		printf ( "ip[%d][%d]:%s op:%s\n ",i,j,links[i][j].ip, 
+						  links[i][j].resl );
 		}
 		}
 			printf("\e[?25l");		/* hide the cursor */
@@ -931,8 +957,8 @@ main( int argc, char *argv[])
 	{
 		argument[i] = (int*) malloc( sizeof(int));
 		*argument[i] = i;
-		if(pthread_create(&th[i],NULL,(void *)&prcoess_raw_data_files,argument[i]))
-		{
+		if(pthread_create(&th[i],NULL,(void *)&prcoess_raw_data_files,
+								argument[i])){
 			sprintf(thread_err,"create[%d]",i);
 			perror(thread_err);
 		}
