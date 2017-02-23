@@ -1,4 +1,4 @@
-#include "a.h"
+#include "k_medoid_clustering.h"
 
 k_med_clust::k_med_clust( void )
 {
