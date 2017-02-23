@@ -60,7 +60,9 @@ feed_links ( const char *link )
 		printf ( "\nres Invalid entries in result directory.\n" );
 		exit(0);	
 	}
-	//printf ( "link:%s\n",link==NULL?"null":link );
+#ifdef DEBUG
+	printf ( "link:%s\n",link==NULL?"null":link );
+#endif
 	if ( strstr( link, "SC_1" ) != NULL ) {
 		if ( is_input_file ) {
 			links[SCENARIO_1][scenario_one_iterator].ip=strdup(link);
@@ -119,14 +121,19 @@ feed_links ( const char *link )
 			result_seven_iterator++;		
 		}
 	}else {
-		printf ( "\n count Invalid entries in directory.\n");
+#ifdef DEBUG
+		printf ( "Link: %s\n",link );
+#endif
+		printf ( "\n Invalid entries in directory.\n");
 		exit(0);
 	} 	
-	/*printf ( "\nentries in directory.%d %d %d %d %d %d %d\n",
-	 * 			scenario_three_iterator, scenario_one_iterator, 
-	//scenario_two_iterator, scenario_four_iterator, 
-	//scenario_five_iterator, scenario_six_iterator,
-	//scenario_seven_iterator );*/
+#ifdef DEBUG
+	printf ( "\nentries in directory.%d %d %d %d %d %d %d\n",
+	 			scenario_three_iterator, scenario_one_iterator, 
+				scenario_two_iterator, scenario_four_iterator, 
+				scenario_five_iterator, scenario_six_iterator,
+				scenario_seven_iterator );
+#endif
 
 }
 
@@ -207,7 +214,9 @@ feed_io_file_to_struct(int sc, int no)    /* Set source destination file
 {
 	strncpy(ip[sc],links[sc][no].ip,strlen(links[sc][no].ip));
 	ip[sc][strlen(links[sc][no].ip)] = '\0';
-	//printf("\nLink:%s",ip[sc][]);
+#ifdef DEBUG
+	printf("\nLink:%s",ip[sc]);
+#endif
 	switch(sc)
 	{
 		case 0:
@@ -240,8 +249,6 @@ feed_io_file_to_struct(int sc, int no)    /* Set source destination file
 			break;
 	}
 	printf("\nsetting Link[%d]:%s op %s \n",sc, ip[sc], op[sc]);
-
-
 }
 
 	
@@ -827,7 +834,7 @@ prcoess_raw_data_files(void *sce)
 
 /* Following function
  * prints the status of 
- * preprocessed files
+ * pre-processed files
  * at the moment.
  */
 void 
@@ -846,7 +853,9 @@ show_processing_status()
 		 * path x Number of paths = 560 
 		 */
 		dev = ((float)cur/559)*100;
-		//printf("\r%.2f%% files Pre-Processed......",dev);
+#ifdef DEBUG
+		printf("\r%.2f%% files Pre-Processed......",dev);
+#endif
 		fflush(stdout);
 		if(prec==560)
 		{
@@ -935,15 +944,18 @@ main( int argc, char *argv[])
 		exit(0);
 	}
 	print_directory_tree( input_file_dir );
+	printf( "Printed input dir tree \n" );
 	is_input_file = 0;
 	print_directory_tree( result_file_dir );
-		for ( i=0; i<NO_OF_SCENARIOS; i++ ) {
+	printf( "printed out dir tree\n" );
+	for ( i=0; i<NO_OF_SCENARIOS; i++ ) {
 		for( j=0; j<TOTAL_TRIALS;j++) {
-		printf ( "ip[%d][%d]:%s op:%s\n ",i,j,links[i][j].ip, 
-						  links[i][j].resl );
+			printf ( "ip[%d][%d]:%s op:%s\n ",
+						i,j,links[i][j].ip, 
+					  	links[i][j].resl );
 		}
-		}
-			printf("\e[?25l");		/* hide the cursor */
+	}
+	printf("\e[?25l");		/* hide the cursor */
 
 	i = NO_OF_SCENARIOS;
 	if(pthread_create(&th[i],NULL,(void *)&show_processing_status,NULL))
@@ -982,8 +994,8 @@ main( int argc, char *argv[])
 	printf("\n");
 	/* show the cursor */
 	printf("\e[?25h");
-	for ( i=0; i<1;i++)
+	for ( i=0; i<1;i++) {
 		free(argument[i]);
-	
+	}
 	return EXIT_SUCCESS;
 }

@@ -1,259 +1,270 @@
-/* File : kmedoids
- * Following is the implementation of k-medoids clustering algorithm.
- * Input : Distance matrix calculated using Manhattan or Euclidean 
- *         distance in the previous phases. 
- * Output : Set of clusters in text files.
- *
- * @date 15-05-2014
- *
- */
-/* Header Files */
-#include<iostream.h>
-#include<math.h>
-#include<fstream.h>
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include<time.h>
-#include<errno.h>
+#include "a.h"
 
-fstream fil;
-
-
-#define NO_OF_PATH 8
-FILE *res;
-const int NO_OF_FILES_READ = 70;
-int K,path; 		
-int representative_object[15];
-float dtwdist[NO_OF_FILES_READ][NO_OF_FILES_READ];    /* DTW distance matrix*/
-struct links
+k_med_clust::k_med_clust( void )
 {
-	char ips[35];
-}link[NO_OF_PATH];
-struct label
-{
-	int cluster_no;
-	char filename[20];
-}trial[NO_OF_FILES_READ];
+	cout<<"Enter value for K:"<<endl;
+	cin>>K;
+}
 
-void set_links()
+k_med_clust::~k_med_clust( void )
 {
-	strcpy(link[0].ips,"1.xls");
-	strcpy(link[1].ips,"2.xls");
-	strcpy(link[2].ips,"3.xls");
-	strcpy(link[3].ips,"4.xls");
-	strcpy(link[4].ips,"5.xls");
-	strcpy(link[5].ips,"6.xls");
-	strcpy(link[6].ips,"7.xls");
-	strcpy(link[7].ips,"8.xls");
+
 }
 
 
-void Read_dist_matrix(int l)                    
-/*read dist matrix and write to dtwdist[][]*/
-{
-	char ch,temp[30];
-	int i, j,count=0,ind=0;
-	FILE *in;
-	in = fopen(link[l].ips,"r");
-	if(!in)
-	{
-		cerr << strerror(errno);
-		cout<<":Opening file!";
-
-	}
-	for(i=0;i<=NO_OF_FILES_READ - 1;i++)
-	{
-		fscanf(in,"%s",&temp);
-	}
-	for(i=0;i<=NO_OF_FILES_READ - 1;i++)
-	{
-		trial[i].cluster_no = i;
-	}
-	for(i=0;i<NO_OF_FILES_READ;i++)
-	{
-		for(j=0;j<NO_OF_FILES_READ;j++)
-		{
-			if(j==0)
-			{
-				fscanf(in,"%s",&trial[i].filename);		 
-			}
-
-			fscanf(in,"%s",&temp);
-			dtwdist[i][j] = atof(temp);      
-
-		}
-	}
-	fclose(in);
-	/* In case I need to print. */
-	/*
-	for(i=0;i<=NO_OF_FILES_READ - 1;i++)
-	{
-		for(j=0;j<=NO_OF_FILES_READ - 1;j++)
-		{
-			cout<<"\n["<<i<<"]["<<j<<"]:"<<dtwdist[i][j];
-			getch();
-		}
-	}
-	*/
-}
-
-/* This function returns the cluster number 
- * of the nearest representative object to 
- * the object given as argument.
- */
-int nearest_cluster(int object) 
+// This function returns the cluster number 
+// of the nearest representative object to 
+// the object given as argument.
+//
+int k_med_clust::nearest_cluster( int object ) 
 {
 	int i, min_ele=0;
-	for (i=0; i<K; i++)
-	{
-		if (representative_object[i] == object) return i; 
-		/* i.e., if object is a representative object */
-		else if (dtwdist[object][representative_object[i]] < dtwdist[object][representative_object[min_ele]])	
+	for (i=0; i<K; i++) {
+		if (representative_object[i] == object) { 
+			return i;
+		//i.e., if object is a representative object	
+		}else if ( distance_matrix[object][representative_object[i]] < 
+			   distance_matrix[object][
+			   representative_object[min_ele]] ) {
 			min_ele = i;
+		}
 	}
 	return min_ele;
 }
 
-/* Select a new representative object randomly.
- * Make sure that the object selected is not already 
- * a representative object. Function returns
- * the index of the new.
- */
-int new_random_object()
+// Select a new representative object randomly.
+// Make sure that the object selected is not already 
+// a representative object. Function returns
+// the index of the new.
+//
+int k_med_clust::new_random_object( void )
 {
 	int ele, i;
 	int  unique; 
-	do                                                                                                         
-	{  
+	srand(time(NULL));
+	do{  
 		unique = 1;
-		ele = rand() % NO_OF_FILES_READ;          /* select a new rep object randomly */
-
-		for (i=0; i<K; i++)
-		{
-			if (ele == representative_object[i])   /* new rep object must be 
-								  one of the current non rep 
-								  objects */
-			{
+		// select a new rep object randomly
+		ele = rand() % matrix_len;
+		for (i=0; i<K; i++) {
+			 // new rep object must be
+			 // one of the current non rep
+			 // objects.
+			if (ele == representative_object[i]) {
 				unique = 0;
 				break;
 			}
 		}
-	}
-	while (unique==0);
+	}while (unique==0);
 	return ele;
 }
 
-/* This function selects a random set of initial 
- * representative objects.Function return the sum 
- * of distances between an object and its representative 
- * object.
- */
-float initialise_clusters()
+// This function selects a random set of initial 
+// representative objects.Function return the sum 
+// of distances between an object and its representative 
+// object.
+//
+float k_med_clust::initialise_clusters( void )
 {
 	int i, cluster;
 	float  total_dist = 0.0;   
 
-	for (i=0; i<K; i++)
+	for (i=0; i<K; i++) {
 		representative_object[i]= new_random_object();
+	}
 
-	for (i=0; i< NO_OF_FILES_READ; i++)
-		total_dist = total_dist + dtwdist[i][representative_object[nearest_cluster(i)]];
-
+	for (i=0; i< matrix_len; i++) {
+		total_dist = total_dist + 
+			     distance_matrix[i][representative_object
+			     [nearest_cluster(i)]];
+	}
 	return total_dist;
 }
-void open_res()
-{
-	res = fopen("res.xls","w");
-}
 
-/* This function displays  memebrs of the 
- * current set of clusters.
- */
-void display_clusters()
+
+// This function displays  members of the 
+// current set of clusters.
+//
+void k_med_clust::display_clusters( void )
 {
 	int i, cluster, rep_object;
-	for (i=0; i< NO_OF_FILES_READ; i++)
-	{
-		trial[i].cluster_no = nearest_cluster(i);
+	for (i=0; i< matrix_len; i++) {
+		label_no.at(i) = nearest_cluster(i);
 	}
-	for (cluster=0; cluster<K; cluster++)
-	{
-
-		fprintf(res,"\n\nCluster %d:\t",cluster);
-		for (i=0; i< NO_OF_FILES_READ; i++)
-		{
-			if (trial[i].cluster_no == cluster)
-			{
-				fprintf(res,"%s\t",trial[i].filename);
+	for (cluster=0; cluster<K; cluster++) {
+		cout<<"Cluster:"<<cluster;
+		for (i=0; i< matrix_len; i++) {
+			if ( label_no.at(i) == cluster ) {
+				cout<<matrix_label.at(i);
 			}
 		}
 	}
 }
 
-/* This function implements the kmedoid algorithm. */
-
-void form_cluster(int f)
+// This function implements the kmedoid algorithm. 
+void k_med_clust::form_cluster( string dist_matrix_file )
 {
 	int i, epoch, cluster, old_rep_object;
 	float total_dist, new_dist;
 	int changed;
-	fprintf(res,"\n\n\n\t\t\t\t\t\t\t\tPath:%d\n",path);
-	set_links();
-	Read_dist_matrix(f);                          /* Read the DTW matrix from file*/
+	cout<<"Distance Matrix:"<<dist_matrix_file<<endl;
 
-	total_dist = initialise_clusters();		/* Find the cumulative distance of initial cluster set */
-	fprintf(res,"\nInitial cluster distance is:%.1f\n",total_dist);     /* Cluster reformation is iterated 200 times.*/
-	for (epoch=0; epoch < 200; epoch ++)
-	{
+	// Find the cumulative distance of initial cluster set
+	total_dist = initialise_clusters();
+	// Cluster reformation is iterated 200 times.
+	cout<<"Initial cluster distance is:"<<total_dist;     
+	for (epoch=0; epoch < 200; epoch ++) {
 		changed = 0;
-		for (cluster=0; cluster < K; cluster++)
-		{
-			for (i=0; i<NO_OF_FILES_READ; i++)
-			{
+		for (cluster=0; cluster < K; cluster++) {
+			for (i=0; i<matrix_len; i++) {
 				new_dist = 0.0;
 				old_rep_object = representative_object[cluster];
-				representative_object[cluster]= new_random_object();
+				representative_object[cluster] = 
+							    new_random_object();
 
-				for (i=0; i< NO_OF_FILES_READ; i++)
-					new_dist = new_dist + dtwdist[i][representative_object[nearest_cluster(i)]];
-				if (new_dist < total_dist)
-				{
+				for (i=0; i< matrix_len; i++) {
+					new_dist = new_dist + distance_matrix[i][
+						   representative_object[
+						   nearest_cluster(i)]];
+				}
+				if (new_dist < total_dist) {
 					total_dist = new_dist;
 					changed = 1;
 					break;
+				} else{ 
+					representative_object[cluster] = 
+								old_rep_object;
 				}
-				else representative_object[cluster] = old_rep_object;
 			}
 		}
-		if (changed == 1)
-		{
-			fprintf(res,"\nEPOCH Number:%d\n",epoch);
-			fprintf(res,"\nTotal distance is:%.1f\n",total_dist);
-			/*display_clusters(); In case I just want to display results.*/
+		if (changed == 1) {
+			cout<<"EPOCH Number:"<<epoch<<endl;
+			cout<<"Total distance is:"<<total_dist<<endl;
+			// In case I just want to display results.
 		}
 	}
+#ifdef DISPLAY
 	display_clusters();
+#endif
 }
 
-int main()
-{
-	int ag=1;
-	open_res();
-	do{
-		clrscr();
-		cout<<"\nEnter number of Cluster(K):";
-		cin>>K;
-		for(path=0; path<=NO_OF_PATH; path++)
-		{
-			form_cluster(path);
-			cout<<"\nCalculating Path:"<<path;	
-		}  
-		cout<<"\nTo continue,Press 1:";
-		cin>>ag;
-	}while(ag==1);
-	fclose(res);
-	getch();
-	return 0;
 
+// Loops through the dist matrix files 
+// given in conf_file and shows clustering result.
+void k_med_clust::create_cluster( void ) 
+{
+	string conf_file = "clust.conf";
+	conf_read_load_filename(conf_file);
+	
+	for( int i = 0; i<files.size(); i++ ) {
+		load_label_from_file( files.at(i) );
+		load_dist_matrix( files.at(i) );
+#ifdef DEBUG
+		print_dist_matrix();
+#endif
+		form_cluster( files.at(i) );
+		distance_matrix.clear();
+		matrix_label.clear();
+		label_no.clear();
+	}	
+}
+
+
+// Loads labels of a distance matrix (from file) to
+// a vector.
+void k_med_clust::load_label_from_file( string& dist_matrix_file )
+{
+	ifstream matrix_reader( dist_matrix_file );
+	string labels;
+	getline( matrix_reader, labels );
+	matrix_reader.close();
+	
+	istringstream label_iss( labels );
+	string slabel;
+	while( label_iss >> slabel ) {
+		matrix_label.push_back(slabel); 
+	}
+	for( int i = 0; i<matrix_len; i++ ) {
+		label_no.push_back(i);
+	}
+#ifdef DEBUG
+	cout<<"List of labels:"<<endl;
+	for( vector<string>::iterator i = matrix_label.begin(); 
+	     i!=matrix_label.end(); ++i ) {
+		cout<<*i<<endl;
+	}
+#endif
+}
+
+// Print the loaded distance matrix 
+// meant for debugging purpose.
+void k_med_clust::print_dist_matrix( void ) 
+{
+	cout<<"size:"<<distance_matrix.size()<<endl;
+	for( int i = 0; i< distance_matrix.size(); ++i ) {
+		for( int j = 0; j<distance_matrix[i].size(); ++j ) {
+			if( j == 0 ) {
+			}
+			cout<<distance_matrix[i][j]<<" ";
+		}
+		cout<<endl;
+	}
+}
+
+
+// Loads whole distance matrix from file to 
+// a 2D matrix.
+// Input: A file containing distance matrix.
+void k_med_clust::load_dist_matrix( string& dist_matrix_file )
+{
+	ifstream matrix_reader( dist_matrix_file );
+	string matrix_row;
+	getline( matrix_reader, matrix_row );
+	istringstream row_parse( matrix_row );
+	//Read by row
+	while( getline( matrix_reader, matrix_row ) ) {
+		vector<int> row;
+		int element;
+		stringstream temp_ss;
+		temp_ss << matrix_row;
+		string temp;
+		// Ignore the label column and push rest of the
+		// values into vector.
+		while( getline( temp_ss, temp, ' ') ) {
+			if( stringstream(temp) >> element ) {
+				row.push_back( element );	
+			}
+		}
+		distance_matrix.push_back( row );
+	}
+	matrix_reader.close();
+	matrix_len = distance_matrix.size();
+}
+
+
+// Reads a conf file with list of file names
+// and pushes those file names into a string vector.
+// Input: Conf file location
+void k_med_clust::conf_read_load_filename( string& file_list )
+{
+	ifstream conf_reader( file_list );
+	string line;
+	while( getline( conf_reader, line ) ) {
+		files.push_back( line );	
+	}
+	conf_reader.close();
+#ifdef DEBUG
+	cout<<"List of distance matrix Files:"<<endl;
+	for( vector<string>::iterator i = files.begin(); i!=files.end(); ++i) {
+		cout<<*i<<endl;
+	}
+#endif
+}
+
+
+int main( void )
+{
+	k_med_clust kmc;
+	kmc.create_cluster();
+	return 0;
 }
