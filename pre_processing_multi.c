@@ -47,8 +47,8 @@ feed_links ( const char *link )
 		(scenario_five_iterator > TOTAL_TRIALS) || 
 		(scenario_six_iterator > TOTAL_TRIALS) || 
 		(scenario_seven_iterator > TOTAL_TRIALS) ) {
-		printf ( "\nInvalid entries in directory.\n" );
-		exit(0);	
+		fprintf ( stderr, "\nInvalid entries in directory.\n" );
+		exit(EXIT_FAILURE);	
 	}
 	if (    (result_one_iterator > TOTAL_TRIALS) || 
 		(result_two_iterator > TOTAL_TRIALS) || 
@@ -57,8 +57,9 @@ feed_links ( const char *link )
 		(result_five_iterator > TOTAL_TRIALS) || 
 		(result_six_iterator > TOTAL_TRIALS) || 
 		(result_seven_iterator > TOTAL_TRIALS) ) {
-		printf ( "\nres Invalid entries in result directory.\n" );
-		exit(0);	
+		fprintf ( stderr, "\nres Invalid entries in result"\
+				  " directory.\n" );
+		exit(EXIT_FAILURE);	
 	}
 #ifdef DEBUG
 	printf ( "link:%s\n",link==NULL?"null":link );
@@ -124,8 +125,8 @@ feed_links ( const char *link )
 #ifdef DEBUG
 		printf ( "Link: %s\n",link );
 #endif
-		printf ( "\n Invalid entries in directory.\n");
-		exit(0);
+		fprintf ( stderr, "\n Invalid entries in directory.\n");
+		exit(EXIT_FAILURE);
 	} 	
 #ifdef DEBUG
 	printf ( "\nentries in directory.%d %d %d %d %d %d %d\n",
@@ -179,7 +180,7 @@ print_entry(const char *filepath, const struct stat *info,
 	} else
 		if (typeflag == FTW_SLN) {
 
-			printf(" %s (dangling symlink)\n", filepath);
+			fprintf(stderr, " %s (dangling symlink)\n", filepath);
 		}else
 			if (typeflag == FTW_F){
 				feed_links( filepath );
@@ -248,15 +249,19 @@ feed_io_file_to_struct(int sc, int no)    /* Set source destination file
 			op[sc][NO_OF_SCENARIOS] = '\0';
 			break;
 	}
+#ifdef DEBUG
 	printf("\nsetting Link[%d]:%s op %s \n",sc, ip[sc], op[sc]);
+#endif
 }
 
 	
 void 
 open_data_file(int sc)				/* open file*/
 {
+#ifdef DEBUG
 
 	printf ( "opening[%d]:%s op:%s\n",sc,ip[sc],op[sc]);
+#endif
 	src[sc] = fopen(ip[sc], "r+");			/* Open I/O file */
 	if(src[sc] == NULL )				/* Notify Error */
 	{
@@ -939,15 +944,16 @@ main( int argc, char *argv[])
 		} 
 	}
 	if ( (result_file_dir == NULL) || ( input_file_dir == NULL ) ) {
-		printf ( "\nInput file and result file directories "\
+		fprintf ( stderr, "\nInput file and result file directories "\
 			 "are required.\n" );
-		exit(0);
+		exit(EXIT_FAILURE);
 	}
 	print_directory_tree( input_file_dir );
+#ifdef DEBUG
 	printf( "Printed input dir tree \n" );
+#endif
 	is_input_file = 0;
 	print_directory_tree( result_file_dir );
-	printf( "printed out dir tree\n" );
 	for ( i=0; i<NO_OF_SCENARIOS; i++ ) {
 		for( j=0; j<TOTAL_TRIALS;j++) {
 			printf ( "ip[%d][%d]:%s op:%s\n ",
