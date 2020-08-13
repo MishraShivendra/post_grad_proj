@@ -1,3 +1,5 @@
+**Notice:** _This repository is protected with [license](https://github.com/MishraShivendra/node_mcu_py_email/blob/master/LICENSE.md), corporate/commercial use is restricted._
+
 # Acquisition and Analysis of Robotic Environment Data Using Machine Learning Techniques
 
 #### Abstract:
