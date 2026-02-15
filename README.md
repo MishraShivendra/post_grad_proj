@@ -50,6 +50,11 @@ The matrix calculation and clustering code is straight forward. Compilation and 
 - [project site](http://goo.gl/56nCqb)
 - [Publication-On Springer page](http://link.springer.com/chapter/10.1007%2F978-81-322-2202-6_44)
 
+#### Notes
+This project is supervised by:
+1. Dr. Deepa Gupta @School of Engg., Amrita University, Bangalore 
+2. Dr. G. Radhakrishnan @School of Engg., Amrita University, Bangalore 
+
 #### Write to me
 I am looking forward to collaborate with people in this project as well other projects. Please feel free to write me an e-mail:
 shivendra _ mishra at live dot com
